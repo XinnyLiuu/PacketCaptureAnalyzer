@@ -13,15 +13,15 @@ Given ICMP packet captures containing ~8000 packets collected across 4 nodes, fi
 """
 
 import os
-from phases import FilterPackets
+from phases import *
 
 
 def main():
     """
-    Instantiate the phase classes
-    """
+    Packet Filtering 
 
-    # Filter all the given packets
+    Grab the paths of the node texts to be filtered
+    """
     paths = [
         "captures/Node1.txt",
         "captures/Node2.txt",
@@ -31,6 +31,29 @@ def main():
 
     for path in paths:
         FilterPackets(path).filter()
+
+    """
+    Packet Parsing
+    
+    Read relevant packet fields into memory for processing
+    """
+    paths = [
+        "Node1_filtered.txt",
+        # "Node2_filtered.txt",
+        # "Node3_filtered.txt",
+        # "Node4_filtered.txt",
+    ]
+
+    for path in paths:
+        pp = PacketParser(path)
+        pp.parse()
+
+        """
+        Compute Metrics
+        
+        Compute the parsed packet fields for each node
+        """
+        # ComputeMetrics(pp.requests).compute()
 
 
 if __name__ == "__main__":

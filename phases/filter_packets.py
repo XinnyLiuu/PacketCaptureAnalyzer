@@ -9,7 +9,7 @@ class FilterPackets:
     def __init__(self, path):
         self.path = path
         self.file_name = path.split("/")[1].split(".")[0]
-        self.icmp_lines = list()
+        self.icmp_lines = []
 
     def filter(self):
         """
@@ -18,6 +18,7 @@ class FilterPackets:
         f = open(self.path)
         lines = f.readlines()
 
+        # Iterate through each line to find the icmp related lines into an array
         for i in range(len(lines)):
             curr = lines[i]
             if "No." in curr:
@@ -32,7 +33,6 @@ class FilterPackets:
                         self.icmp_lines.append(lines[i])
                         i += 1
 
-        # Close file after filtering is done
         f.close()
 
         # Combine the filtered lines
@@ -42,5 +42,5 @@ class FilterPackets:
         # Write to a file named <self.file_name>_filtered.txt
         f = open("{}_filtered.txt".format(self.file_name), "w")
         f.write(data)
-        print("{}_filtered.txt done.".format(self.file_name))
+        # print("Filtered {}.txt.".format(self.file_name))
         f.close()
