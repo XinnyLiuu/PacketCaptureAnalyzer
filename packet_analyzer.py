@@ -38,22 +38,27 @@ def main():
     Read relevant packet fields into memory for processing
     """
     paths = [
-        "Node1_filtered.txt",
+        {
+            "path": "Node1_filtered.txt",
+            "ip": "192.168.100.1"
+        }
         # "Node2_filtered.txt",
         # "Node3_filtered.txt",
         # "Node4_filtered.txt",
     ]
 
-    for path in paths:
-        pp = PacketParser(path)
+    for p in paths:
+        pp = PacketParser(p["path"])
         pp.parse()
+        packets = pp.packets  # All packets for the Node
 
         """
         Compute Metrics
         
         Compute the parsed packet fields for each node
         """
-        # ComputeMetrics(pp.requests).compute()
+        source = p["ip"]
+        ComputeMetrics(packets, source).compute()
 
 
 if __name__ == "__main__":

@@ -28,36 +28,121 @@ Given the parsed packet fields, compute the 13 metrics per node:
 
 
 class ComputeMetrics:
-    def __init__(self, requests):
-        self.requests = requests
+    def __init__(self, packets, source_ip):
+        self.packets = packets
+        self.source_ip = source_ip
         self.metrics = {}
+
+        # Set the 3 categories of metrics in the dictionary
+        self.metrics["data_size"] = {}
+        self.metrics["time"] = {}
+        self.metrics["distance"] = {}
 
     def compute(self):
         """
-        Computes metrics from the requests summary (request, reply)
+        Computes metrics from all packets
         """
-        for request in self.requests:
-            # Get the request and reply summaries
-            req = request[0]
-            reply = request[1]
+        self.set_requests_sent(self.packets["requests"])
+        self.set_requests_received(self.packets["requests"])
+        self.set_replies_sent(self.packets["replies"])
+        self.set_replies_received(self.packets["replies"])
+        self.set_request_bytes_sent(self.packets["requests"])
+        self.set_request_bytes_received(self.packets["requests"])
+        self.set_request_data_sent(self.packets["requests"])
+        self.set_request_data_received(self.packets["requests"])
 
-            # Split the values by whitespaces
-            print(req.split())
-            print(reply.split())
-            req = req.split()
-            reply = reply.split()
+    def set_requests_sent(self, requests):
+        """
+        Computes the number of echo requests sent
+        """
+        sent = []
 
-            # Assign each field accordingly
-            time_req = req[1]
-            time_reply = reply[1]
+        for packet in requests:
+            if packet.source == self.source_ip:
+                sent.append(packet)
 
-            source_req = req[2]
-            source_reply = reply[2]
+        self.metrics["data_size"]["requests_sent"] = len(sent)
 
-            dest_req = req[3]
-            dest_reply = reply[3]
+    def set_requests_received(self, requests):
+        """
+        Computes the number of echo requests received
+        """
+        received = []
 
-            bytes_req = req[5]
-            bytes_reply = reply[5]
+        for packet in requests:
+            if packet.dest == self.source_ip:
+                received.append(packet)
 
-            break
+        self.metrics["data_size"]["requests_received"] = len(received)
+
+    def set_replies_sent(self, replies):
+        """
+        Computes the number of echo replies sent
+        """
+        sent = []
+
+        for packet in replies:
+            if packet.source == self.source_ip:
+                sent.append(packet)
+
+        self.metrics["data_size"]["replies_sent"] = len(sent)
+
+    def set_replies_received(self, replies):
+        """
+        Computes the number of echo replies received
+        """
+        received = []
+
+        for packet in replies:
+            if packet.dest == self.source_ip:
+                received.append(packet)
+
+        self.metrics["data_size"]["replies_received"] = len(received)
+
+    def set_request_bytes_sent(self, requests):
+        """
+        Computes the total number of bytes sent by requests
+        """
+        total = 0
+
+        for packet in requests:
+            if packet.source == self.source_ip:
+                total += packet.frame_size
+
+        self.metrics["data_size"]["request_bytes_sent"] = total
+
+    def set_request_bytes_received(self, requests):
+        """
+        Computes the total number of bytes received by requests
+        """
+        total = 0
+
+        for packet in requests:
+            if packet.dest == self.source_ip:
+                total += packet.frame_size
+
+        self.metrics["data_size"]["request_bytes_received"] = total
+
+    def set_request_data_sent(self, requests):
+        """
+        Computes the total number of data sent by requests
+        """
+        total = 0
+
+        for packet in requests:
+            if packet.source == self.source_ip:
+                total += packet.data_length
+
+        self.metrics["data_size"]["request_data_sent"] = total
+
+    def set_request_data_received(self, requests):
+        """
+        Computes the total number of data received by requests
+        """
+        total = 0
+
+        for packet in requests:
+            if packet.dest == self.source_ip:
+                total += packet.data_length
+
+        self.metrics["data_size"]["request_data_received"] = total

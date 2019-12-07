@@ -15,6 +15,8 @@ class FilterPackets:
         """
         Parses each line in the text file and filters everything not related to ICMP protocols
         """
+        print("Filtering {} ...".format(self.file_name))
+
         f = open(self.path)
         lines = f.readlines()
 
@@ -42,5 +44,5 @@ class FilterPackets:
         # Write to a file named <self.file_name>_filtered.txt
         f = open("{}_filtered.txt".format(self.file_name), "w")
         f.write(data)
-        # print("Filtered {}.txt.".format(self.file_name))
+        print("done.")
         f.close()
