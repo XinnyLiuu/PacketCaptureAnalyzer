@@ -22,39 +22,37 @@ class PacketParser:
         """
         print("Parsing {} ...".format(self.node))
 
-        f = open(self.file)
-        lines = f.readlines()
+        with open(self.file) as f:
+            lines = f.readlines()
 
-        all_hex = []  # all_hex will contain arrays of complete hex data from the packets
-        summaries = []  # Stores the summary of each packet
+            all_hex = []  # all_hex will contain arrays of complete hex data from the packets
+            summaries = []  # Stores the summary of each packet
 
-        # Search through each line to find hex data
-        for i in range(len(lines)):
-            if "No." in lines[i]:
+            # Search through each line to find hex data
+            for i in range(len(lines)):
+                if "No." in lines[i]:
 
-                # Grab the summary line for each packet
-                summaries.append(lines[i+1].strip())
+                    # Grab the summary line for each packet
+                    summaries.append(lines[i+1].strip())
 
-                if (i+3) < len(lines):
-                    i += 3  # Jump to the first line containing the hex dump
+                    if (i+3) < len(lines):
+                        i += 3  # Jump to the first line containing the hex dump
 
-                    # Add each section of hex data to an array called hex_data
-                    hex_data = []
-                    data = ""
-                    while "No." not in lines[i]:
-                        data += lines[i].strip()
+                        # Add each section of hex data to an array called hex_data
+                        hex_data = []
+                        data = ""
+                        while "No." not in lines[i]:
+                            data += lines[i].strip()
 
-                        if(i + 1) < len(lines):
-                            i += 1
-                        else:
-                            break
+                            if(i + 1) < len(lines):
+                                i += 1
+                            else:
+                                break
 
-                    hex_data.append(data)
+                        hex_data.append(data)
 
-                    # Append each complete hex data to all_hex
-                    all_hex.append(hex_data)
-
-        f.close()
+                        # Append each complete hex data to all_hex
+                        all_hex.append(hex_data)
 
         # For each complete hex data, clean the unnecessary data
         for i in range(len(all_hex)):

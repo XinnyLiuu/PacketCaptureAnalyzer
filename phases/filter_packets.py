@@ -17,32 +17,29 @@ class FilterPackets:
         """
         print("Filtering {} ...".format(self.file_name))
 
-        f = open(self.path)
-        lines = f.readlines()
+        with open(self.path) as f:
+            lines = f.readlines()
 
-        # Iterate through each line to find the icmp related lines into an array
-        for i in range(len(lines)):
-            curr = lines[i]
-            if "No." in curr:
-                i += 1
-
-                info = lines[i]
-                if("Echo (ping)" in info):
-                    self.icmp_lines.extend([curr, info])
-
+            # Iterate through each line to find the icmp related lines into an array
+            for i in range(len(lines)):
+                curr = lines[i]
+                if "No." in curr:
                     i += 1
-                    while "No." not in lines[i]:
-                        self.icmp_lines.append(lines[i])
-                        i += 1
 
-        f.close()
+                    info = lines[i]
+                    if("Echo (ping)" in info):
+                        self.icmp_lines.extend([curr, info])
+
+                        i += 1
+                        while "No." not in lines[i]:
+                            self.icmp_lines.append(lines[i])
+                            i += 1
 
         # Combine the filtered lines
         data = "".join(self.icmp_lines).strip()
         data += "\n"
 
         # Write to a file named <self.file_name>_filtered.txt
-        f = open("{}_filtered.txt".format(self.file_name), "w")
-        f.write(data)
-        print("done.")
-        f.close()
+        with open("{}_filtered.txt".format(self.file_name), "w") as f:
+            f.write(data)
+            print("done.")

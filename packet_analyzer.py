@@ -14,6 +14,7 @@ Given ICMP packet captures containing ~8000 packets collected across 4 nodes, fi
 
 import os
 from phases import *
+from csv_output import CSVOutput
 
 
 def main():
@@ -56,6 +57,9 @@ def main():
         }
     ]
 
+    # Stores all the metrics of each node
+    all_metrics = []
+
     for p in paths:
         pp = PacketParser(p["path"])
         pp.parse()
@@ -66,10 +70,20 @@ def main():
         """
         Compute Metrics
         
-        Compute the parsed packet for each node
+        Compute the metrics for each node
         """
-        source = p["ip"]
-        ComputeMetrics(packets, source).compute()
+        cm = ComputeMetrics(packets, p["ip"])
+        cm.compute()
+
+        # Add metrics to list
+        all_metrics.append(cm.metrics)
+
+    """
+    Output
+    
+    Write each metrics to a csv
+    """
+    CSVOutput(all_metrics).write()
 
 
 if __name__ == "__main__":
