@@ -1,5 +1,7 @@
 """
 Parse the filtered raw text files and read packet fields to be computed into metrics
+
+Useful: https://hpd.gasmi.net/
 """
 import socket
 import struct
@@ -23,11 +25,16 @@ class PacketParser:
         f = open(self.file)
         lines = f.readlines()
 
-        # all_hex will contain arrays of complete hex data from the packets
-        all_hex = []
+        all_hex = []  # all_hex will contain arrays of complete hex data from the packets
+        summaries = []  # Stores the summary of each packet
 
+        # Search through each line to find hex data
         for i in range(len(lines)):
             if "No." in lines[i]:
+
+                # Grab the summary line for each packet
+                summaries.append(lines[i+1].strip())
+
                 if (i+3) < len(lines):
                     i += 3  # Jump to the first line containing the hex dump
 
@@ -58,13 +65,13 @@ class PacketParser:
                     hex_data.remove(hex_str)
 
             # Parse the data from the hex and prepare fields for Packet objects
-            self.prepare_fields(hex_data)
+            self.prepare_fields(hex_data, summaries[i])
 
         print("done.")
 
-    def prepare_fields(self, hex_data):
+    def prepare_fields(self, hex_data, summary):
         """
-        Given hex data of a packet, parse the fields from each and create a Packet object from each
+        Given hex data of a packet and its corresponding summary, parse the fields from each and create a Packet object from each
         """
         # 0 - 14 represents the ethernet header (max size: 14 bytes)
         ethernet_header = hex_data[0:14]
@@ -119,10 +126,10 @@ class PacketParser:
         if type_request == 0:
             self.packets["replies"].append(
                 Packet(ttl, total_length, frame_size,
-                       source, dest, "reply", data_length)
+                       source, dest, "reply", data_length, summary)
             )
         elif type_request == 8:
             self.packets["requests"].append(
                 Packet(ttl, total_length, frame_size,
-                       source, dest, "request", data_length)
+                       source, dest, "request", data_length, summary)
             )
