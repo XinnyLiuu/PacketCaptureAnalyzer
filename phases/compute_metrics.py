@@ -1,5 +1,5 @@
 """
-Given the parsed packet fields, compute the 13 metrics per node
+Given the parsed packet, compute the 13 metrics per node
 """
 import pprint
 
