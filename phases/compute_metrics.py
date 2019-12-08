@@ -1,10 +1,11 @@
-"""
-Given the parsed packet, compute the 13 metrics per node
-"""
 import pprint
 
 
-class ComputeMetrics:
+class ComputeMetrics(object):
+    """
+    Computes the metrics of the node given the packets and ip address
+    """
+
     def __init__(self, packets, source_ip):
         self.packets = packets
         self.source_ip = source_ip
@@ -171,8 +172,7 @@ class ComputeMetrics:
         replies_received = self.get_received_replies(replies)
 
         # Iterate through all sent/received packets
-        for i in range(len(requests_sent)):
-            request = requests_sent[i]
+        for i, request in enumerate(requests_sent):
             reply = replies_received[i]
 
             # Get sequence numbers
@@ -242,8 +242,7 @@ class ComputeMetrics:
         replies_sent = self.get_sent_replies(replies)
 
         # Iterate through the packets
-        for i in range(len(requests_received)):
-            request = requests_received[i]
+        for i, request in enumerate(requests_received):
             reply = replies_sent[i]
 
             # Get sequence numbers
@@ -281,7 +280,7 @@ class ComputeMetrics:
         replies_received = self.get_received_replies(replies)
 
         # Iterate through the packets
-        for i in range(len(requests_sent)):
+        for i, request in enumerate(requests_sent):
             request = requests_sent[i]
             reply = replies_received[i]
 

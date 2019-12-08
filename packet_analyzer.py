@@ -12,8 +12,7 @@ The packet analyzer program will consist of three main phases:
 Given ICMP packet captures containing ~8000 packets collected across 4 nodes, filter and compute 13 metrics from them.
 """
 
-import os
-from phases import *
+from phases import FilterPackets, PacketParser, ComputeMetrics
 from csv_output import CSVOutput
 
 

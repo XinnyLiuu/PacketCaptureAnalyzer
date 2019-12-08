@@ -1,10 +1,11 @@
-"""
-Takes the data computed from ComputeMetrics and writes it all to a csv file
-"""
 import csv
 
 
-class CSVOutput:
+class CSVOutput(object):
+    """
+    Takes the metrics that are computed and writes them to a csv
+    """
+
     def __init__(self, metrics):
         self.metrics = metrics
 
@@ -12,7 +13,7 @@ class CSVOutput:
         """
         Writes metrics to `output.csv` 
         """
-        print("Writing to output.csv ...")
+        print "Writing to output.csv ..."
 
         with open("output.csv", mode="w") as output:
 
@@ -20,8 +21,7 @@ class CSVOutput:
             writer = csv.writer(output, delimiter=",")
 
             # Iterate through each node's metrics and write the fields to csv
-            for i in range(len(self.metrics)):
-                metrics = self.metrics[i]
+            for i, metrics in enumerate(self.metrics):
 
                 # Identify the node
                 writer.writerow(["Node {}".format(i+1)])
@@ -93,4 +93,4 @@ class CSVOutput:
                 ])
                 writer.writerow([])
 
-        print("done.")
+        print "done."

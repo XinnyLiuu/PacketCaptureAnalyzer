@@ -1,9 +1,8 @@
-"""
-Object representation of the parsed data from the filtered text file
-"""
+class Packet(object):
+    """
+    Object representation of the parsed data from the filtered text file
+    """
 
-
-class Packet:
     def __init__(self, ttl, total_length, frame_size, source, dest, type_request, data_length, summary):
         self.ttl = ttl
         self.total_length = total_length

@@ -1,14 +1,15 @@
-"""
-Parse the filtered raw text files and read packet fields to be computed into metrics
-
-Useful: https://hpd.gasmi.net/
-"""
 import socket
 import struct
-from packet import Packet
+from phases.packet import Packet
 
 
-class PacketParser:
+class PacketParser(object):
+    """
+    Parse the filtered raw text files and read packet fields to be computed into metrics
+
+    Useful: https://hpd.gasmi.net/
+    """
+
     def __init__(self, filename):
         self.file = filename
         self.node = filename.split(".")[0].split("_")[0]
@@ -20,7 +21,7 @@ class PacketParser:
         """
         Parse through the lines of the filtered file and gather all the hex data of each packet
         """
-        print("Parsing {} ...".format(self.node))
+        print "Parsing {} ...".format(self.node)
 
         with open(self.file) as f:
             lines = f.readlines()
@@ -29,8 +30,8 @@ class PacketParser:
             summaries = []  # Stores the summary of each packet
 
             # Search through each line to find hex data
-            for i in range(len(lines)):
-                if "No." in lines[i]:
+            for i, curr in enumerate(lines):
+                if "No." in curr:
 
                     # Grab the summary line for each packet
                     summaries.append(lines[i+1].strip())
@@ -55,7 +56,7 @@ class PacketParser:
                         all_hex.append(hex_data)
 
         # For each complete hex data, clean the unnecessary data
-        for i in range(len(all_hex)):
+        for i, data in enumerate(all_hex):
             hex_data = "".join(all_hex[i]).split()
 
             for hex_str in hex_data[:]:
@@ -65,7 +66,7 @@ class PacketParser:
             # Parse the data from the hex and prepare fields for Packet objects
             self.prepare_fields(hex_data, summaries[i])
 
-        print("done.")
+        print "done."
 
     def prepare_fields(self, hex_data, summary):
         """
